@@ -1,17 +1,17 @@
 # 3D Gaussian Splatting for Robot Camera Relocalization
 
-Visual relocalization pipeline using 3D Gaussian Splatting as a photorealistic map representation. Given a single query image from an unknown pose in a mapped environment, the system estimates the full 6-DoF camera pose by matching SuperPoint features against a rendered depth map of the 3DGS scene — no GPS, no fiducials, no infrastructure.
+Visual relocalization pipeline using 3D Gaussian Splatting as a photorealistic map representation. Given a single query image from an unknown pose in a mapped environment, the system estimates the full 6-DoF camera pose by matching SuperPoint features against a rendered depth map of the 3DGS scene - no GPS, no fiducials, no infrastructure.
 
 ---
 
 ## Why 3DGS for relocalization
 
-Classical map representations (sparse point clouds, occupancy grids) discard photometric information that would help feature matching. 3DGS retains it: the trained map can render a photorealistic RGB image **and** a metrically accurate depth map from any viewpoint in real time. This means feature matching is done against a rendered view from the estimated camera pose — not against raw point cloud projections — making correspondences denser and more reliable.
+Classical map representations (sparse point clouds, occupancy grids) discard photometric information that would help feature matching. 3DGS retains it: the trained map can render a photorealistic RGB image **and** a metrically accurate depth map from any viewpoint in real time. This means feature matching is done against a rendered view from the estimated camera pose, not against raw point cloud projections. Hence, making correspondences denser and more reliable.
 
 This project compares three approaches to pose estimation:
-- **Coarse prior** — nearest-neighbour training pose with Gaussian noise (simulates IMU dead-reckoning)
-- **Render-Compare** — gradient-free photometric optimisation via Nelder-Mead
-- **Feature-Match** — SuperPoint + LightGlue matching against rendered depth → PnP+RANSAC
+- **Coarse prior**: nearest-neighbour training pose with Gaussian noise (simulates IMU dead-reckoning)
+- **Render-Compare**:  gradient-free photometric optimisation via Nelder-Mead
+- **Feature-Match**:  SuperPoint + LightGlue matching against rendered depth → PnP+RANSAC
 
 ---
 
