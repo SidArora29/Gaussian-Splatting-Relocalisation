@@ -90,9 +90,9 @@ Drag `output/my_scene/point_cloud/iteration_30000/point_cloud.ply` onto [antimat
 
 **Half-resolution training (`-r 2`).** Full-resolution 1080p phone frames exhaust 8GB VRAM during SSIM computation at high Gaussian density. Training at half resolution (531×945) reduces peak VRAM by 4× with negligible quality loss at this Gaussian count.
 
-**SGBM-free depth — 3DGS renders metrically accurate depth natively.** Unlike the VIO benchmarking project (which required SGBM dense stereo), the 3DGS renderer outputs a depth map as a byproduct of Gaussian rasterization with no additional computation. This eliminates the stereo-camera requirement entirely — a single monocular camera suffices for map-building and relocalization.
+**SGBM-free depth: 3DGS renders metrically accurate depth natively.** Unlike the VIO benchmarking project (which required SGBM dense stereo), the 3DGS renderer outputs a depth map as a byproduct of Gaussian rasterization with no additional computation. This eliminates the stereo-camera requirement entirely and a single monocular camera suffices for map-building and relocalization.
 
-**SuperPoint + LightGlue for sparse-to-3D matching.** KLT optical flow (used in the VIO project for temporal tracking) is unsuitable here because rendered and query images have different photometric properties despite depicting the same scene. SuperPoint's learned detector is viewpoint-invariant; LightGlue's transformer-based matcher handles the appearance gap between rendered and real images. Average 218 inliers per query — substantially denser than classical ORB-based relocalization on sparse maps.
+**SuperPoint + LightGlue for sparse-to-3D matching.** KLT optical flow (used in the VIO project for temporal tracking) is unsuitable here because rendered and query images have different photometric properties despite depicting the same scene. SuperPoint's learned detector is viewpoint-invariant; LightGlue's transformer-based matcher handles the appearance gap between rendered and real images. Average 218 inliers per query that is substantially denser than classical ORB-based relocalization on sparse maps.
 
 **PnP+RANSAC for metric pose recovery.** Matched 2D query keypoints are paired with 3D world coordinates back-projected through the 3DGS depth map. `cv2.solvePnPRansac` with EPNP + 3000 iterations recovers the full 6-DoF camera pose metrically. 4.0 px reprojection threshold chosen empirically for portrait-format 531×945 images.
 
@@ -102,7 +102,7 @@ Drag `output/my_scene/point_cloud/iteration_30000/point_cloud.ply` onto [antimat
 
 ## Ablation: learned vs classical feature matching
 
-The VIO benchmarking project found SuperPoint + LightGlue produced **2.4× higher RMSE** than classical SGBM for 20 Hz temporal tracking — because learned wide-baseline matchers are poorly suited to high-frequency consecutive-frame matching where inter-frame motion is small.
+The VIO benchmarking project found SuperPoint + LightGlue produced **2.4× higher RMSE** than classical SGBM for 20 Hz temporal tracking because learned wide-baseline matchers are poorly suited to high-frequency consecutive-frame matching where inter-frame motion is small.
 
 Here the result reverses: LightGlue is the correct tool because relocalization **is** a wide-baseline matching problem. The query and the rendered reference image are taken from different times, potentially different lighting, and with the photometric gap between real and rendered imagery. Classical ORB/BRIEF descriptors are not robust to the real-vs-rendered appearance gap; SuperPoint's convolutional features generalize across it.
 
